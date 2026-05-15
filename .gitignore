@@ -1,5 +1,13 @@
+# ─── Estrategia: ignorar todo, permitir explícitamente ───────────────────────
+# La ÚLTIMA regla que coincide gana en gitignore.
+
+# 1. Ignorar absolutamente todo
 *
+
+# 2. Permitir navegación de directorios (necesario para que las exclusiones
+#    funcionen en subdirectorios; las re-exclusiones vienen después)
 !*/
+
 # ─── Directorios completamente ignorados ─────────────────────────────────────
 node_modules/
 dist/
@@ -9,12 +17,16 @@ reports/
 
 # ─── Archivos raíz permitidos ─────────────────────────────────────────────────
 !.gitignore
+!.dockerignore
 !.env.example
 !package.json
 !package-lock.json
 !tsconfig.json
 !README.md
 !LICENSE
+!Dockerfile
+!docker-compose.yml
+!docker-compose.prod.yml
 
 # ─── Código fuente TypeScript ────────────────────────────────────────────────
 !src/
