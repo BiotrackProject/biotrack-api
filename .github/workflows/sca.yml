@@ -1,0 +1,111 @@
+name: SCA — Análisis de Composición de Software
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main, dev]
+  schedule:
+    # Ejecutar todos los lunes a las 07:00 UTC
+    - cron: '0 7 * * 1'
+
+permissions:
+  contents: read
+  security-events: write  # Para subir resultados SARIF al Security tab
+
+jobs:
+  # ─── Job 1: npm audit ────────────────────────────────────────────────────────
+  npm-audit:
+    name: npm audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: npm audit (high+critical)
+        run: npm audit --audit-level=high --json > npm-audit-report.json || true
+
+      - name: Mostrar resumen de vulnerabilidades
+        run: |
+          echo "## npm audit summary" >> $GITHUB_STEP_SUMMARY
+          node -e "
+            const r = require('./npm-audit-report.json');
+            const m = r.metadata?.vulnerabilities ?? {};
+            console.log('| Severidad | Cantidad |');
+            console.log('|-----------|----------|');
+            ['critical','high','moderate','low','info'].forEach(s =>
+              console.log(\`| \${s} | \${m[s] ?? 0} |\`)
+            );
+          " >> $GITHUB_STEP_SUMMARY
+
+      - name: Fallar si hay vulnerabilidades críticas o altas
+        run: npm audit --audit-level=high
+
+  # ─── Job 2: Dependency Review (solo en PRs) ──────────────────────────────────
+  dependency-review:
+    name: Dependency Review
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Revisar dependencias del PR
+        uses: actions/dependency-review-action@v4
+        with:
+          fail-on-severity: high
+          deny-licenses: GPL-2.0, GPL-3.0, LGPL-2.0, LGPL-2.1
+
+  # ─── Job 3: OWASP Dependency-Check ──────────────────────────────────────────
+  owasp-dependency-check:
+    name: OWASP Dependency-Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: OWASP Dependency-Check
+        uses: dependency-check/Dependency-Check_Action@main
+        id: dep-check
+        with:
+          project: 'biotrack-api'
+          path: '.'
+          format: 'SARIF'
+          out: 'reports'
+          args: >
+            --enableRetired
+            --failOnCVSS 7
+            --exclude "**/node_modules/esbuild/**"
+            --exclude "**/node_modules/@esbuild/**"
+
+      - name: Subir reporte SARIF al Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: reports/dependency-check-report.sarif
+
+      - name: Subir reporte HTML como artefacto
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: owasp-dependency-check-report
+          path: reports/dependency-check-report.html
+          retention-days: 30
