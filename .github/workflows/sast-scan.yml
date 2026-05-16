@@ -1,4 +1,4 @@
-name: Sast Scan
+name: SAST Scan
 on:
   push:
     branches:

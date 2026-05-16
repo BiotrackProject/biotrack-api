@@ -1,4 +1,4 @@
-name: SCA — Análisis de Composición de Software
+name: SCA Scan
 
 on:
   push:
