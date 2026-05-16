@@ -14,31 +14,39 @@ permissions:
   security-events: write  # Para subir resultados SARIF al Security tab
 
 jobs:
-  # ─── Job 1: npm audit ────────────────────────────────────────────────────────
-  npm-audit:
-    name: npm audit
+  # ─── Job 1: pnpm audit ───────────────────────────────────────────────────────
+  pnpm-audit:
+    name: pnpm audit
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.1.2
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '24'
-          cache: 'npm'
+          cache: 'pnpm'
 
-      - name: Instalar dependencias
-        run: npm ci
+      # --ignore-scripts evita que paquetes ejecuten preinstall/postinstall
+      # durante el análisis de dependencias (vector de ataque supply chain)
+      - name: Instalar dependencias (sin scripts de ciclo de vida)
+        run: pnpm install --frozen-lockfile --ignore-scripts
 
-      - name: npm audit (high+critical)
-        run: npm audit --audit-level=high --json > npm-audit-report.json || true
+      - name: pnpm audit (high + critical)
+        run: pnpm audit --audit-level=high --json > pnpm-audit-report.json || true
 
       - name: Mostrar resumen de vulnerabilidades
         run: |
-          echo "## npm audit summary" >> $GITHUB_STEP_SUMMARY
+          echo "## pnpm audit summary" >> $GITHUB_STEP_SUMMARY
           node -e "
-            const r = require('./npm-audit-report.json');
+            import { readFileSync } from 'fs';
+            const r = JSON.parse(readFileSync('./pnpm-audit-report.json', 'utf8'));
             const m = r.metadata?.vulnerabilities ?? {};
             console.log('| Severidad | Cantidad |');
             console.log('|-----------|----------|');
@@ -48,7 +56,7 @@ jobs:
           " >> $GITHUB_STEP_SUMMARY
 
       - name: Fallar si hay vulnerabilidades críticas o altas
-        run: npm audit --audit-level=high
+        run: pnpm audit --audit-level=high
 
   # ─── Job 2: Dependency Review (solo en PRs) ──────────────────────────────────
   dependency-review:
@@ -73,14 +81,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.1.2
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '24'
-          cache: 'npm'
+          cache: 'pnpm'
 
-      - name: Instalar dependencias
-        run: npm ci
+      - name: Instalar dependencias (sin scripts de ciclo de vida)
+        run: pnpm install --frozen-lockfile --ignore-scripts
 
       - name: OWASP Dependency-Check
         uses: dependency-check/Dependency-Check_Action@main
