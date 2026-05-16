@@ -20,7 +20,7 @@ reports/
 !.dockerignore
 !.env.example
 !package.json
-!package-lock.json
+!pnpm-lock.yaml
 !tsconfig.json
 !README.md
 !LICENSE
@@ -28,6 +28,7 @@ reports/
 !Dockerfile
 !docker-compose.yml
 !docker-compose.prod.yml
+!prisma.config.ts
 
 # ─── Código fuente TypeScript ────────────────────────────────────────────────
 !src/
