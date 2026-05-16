@@ -62,11 +62,10 @@ export async function loadUser(req: Request, res: Response, next: NextFunction):
     auth0Id,
     rolId: usuario.rol_id,
     rolNombre: usuario.rol?.nombre ?? null,
-    permisos:
-      usuario.rol?.permisos.map((p) => ({
-        modulo: p.permiso.modulo,
-        accion: p.permiso.accion,
-      })) ?? [],
+    permisos: (usuario.rol?.permisos ?? []).map((p) => ({
+      modulo: p.permiso.modulo,
+      accion: p.permiso.accion,
+    })),
   };
 
   next();

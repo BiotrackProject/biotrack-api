@@ -2,7 +2,7 @@ import { Router, type Request, type Response } from 'express';
 import { authenticate } from '../../middleware/authenticate.js';
 import { authorize } from '../../middleware/authorize.js';
 
-const router = Router();
+const router: Router = Router();
 
 /**
  * @openapi

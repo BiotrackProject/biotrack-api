@@ -3,7 +3,7 @@ import * as ctrl from './auth.controller.js';
 import { authenticate } from '../../middleware/authenticate.js';
 import { authLimiter } from '../../middleware/rateLimiter.js';
 
-const router = Router();
+const router: Router = Router();
 
 /**
  * @openapi

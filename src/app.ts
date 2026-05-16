@@ -1,5 +1,5 @@
 import 'express-async-errors';
-import express from 'express';
+import express, { type Express } from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
@@ -20,7 +20,7 @@ import indicadoresRoutes from './modules/indicadores/indicadores.routes.js';
 import accionesRoutes from './modules/acciones/acciones.routes.js';
 import adminRoutes from './modules/admin/admin.routes.js';
 
-const app = express();
+const app: Express = express();
 
 // ─── Seguridad ───────────────────────────────────────────────────────────────
 app.use(

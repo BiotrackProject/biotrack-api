@@ -1,7 +1,7 @@
 import { Router, type Request, type Response } from 'express';
 import { telemetriaLimiter } from '../../middleware/rateLimiter.js';
 
-const router = Router();
+const router: Router = Router();
 
 /**
  * @openapi

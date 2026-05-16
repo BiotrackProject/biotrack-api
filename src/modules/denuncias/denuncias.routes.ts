@@ -3,7 +3,7 @@ import { authenticate } from '../../middleware/authenticate.js';
 import { authorize } from '../../middleware/authorize.js';
 import { seguimientoLimiter } from '../../middleware/rateLimiter.js';
 
-const router = Router();
+const router: Router = Router();
 
 /**
  * @openapi
