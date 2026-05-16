@@ -50,7 +50,7 @@ services:
       - ./src:/app/src:ro           # Hot-reload: monta fuentes en modo lectura
       - ./prisma:/app/prisma:ro
       - uploads_dev:/app/uploads
-    command: npm run dev
+    command: pnpm dev
 
   # ─── Herramientas (ejecutar manualmente con --profile tools) ─────────────────
 
@@ -67,7 +67,7 @@ services:
       - .env
     environment:
       DATABASE_URL: postgresql://biotrack:${POSTGRES_PASSWORD:-biotrack_dev_secret}@postgres:5432/biotrack_db
-    command: npx prisma migrate dev
+    command: pnpm exec prisma migrate dev
     profiles:
       - tools
 
@@ -84,7 +84,7 @@ services:
       - .env
     environment:
       DATABASE_URL: postgresql://biotrack:${POSTGRES_PASSWORD:-biotrack_dev_secret}@postgres:5432/biotrack_db
-    command: npm run db:seed
+    command: pnpm db:seed
     profiles:
       - tools
 
