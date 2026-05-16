@@ -1,23 +1,28 @@
-# ─── Stage 1: Build ──────────────────────────────────────────────────────────
+# ─── Stage 1: builder — todas las deps (dev + prod) + compilación ────────────
 FROM node:24-alpine AS builder
 WORKDIR /app
 
-# Instalar dependencias primero (aprovecha caché de Docker si package.json no cambia)
-COPY package*.json ./
-RUN npm ci
+RUN corepack enable && corepack prepare pnpm@11.1.2 --activate
 
-# Copiar fuentes y compilar
+# Instalar TODAS las dependencias (dev incluidas, necesarias para tsx en dev y tsc en build)
+# --ignore-scripts bloquea preinstall/postinstall de paquetes maliciosos
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile --ignore-scripts
+
 COPY tsconfig.json ./
 COPY prisma ./prisma
 COPY src ./src
 
-# Generar cliente Prisma + compilar TypeScript
-RUN npx prisma generate && npm run build
+# Generar cliente Prisma (explícito porque --ignore-scripts lo saltó)
+# Compilar TypeScript → dist/
+RUN pnpm exec prisma generate && pnpm run build
 
-# Eliminar devDependencies (la imagen final solo lleva producción)
-RUN npm prune --omit=dev
+# ─── Stage 2: pruner — elimina devDeps para la imagen de producción ───────────
+# Stage separado para que "builder" siga teniendo tsx disponible (usado en dev)
+FROM builder AS pruner
+RUN pnpm prune --prod
 
-# ─── Stage 2: Runner de producción ───────────────────────────────────────────
+# ─── Stage 3: runner — imagen mínima de producción ───────────────────────────
 FROM node:24-alpine AS runner
 LABEL org.opencontainers.image.title="BIOTRACK API"
 LABEL org.opencontainers.image.description="API REST — Gestión de minería ilegal de arena · INTEC IDS355"
@@ -26,16 +31,14 @@ LABEL org.opencontainers.image.source="https://github.com/Albert2707/biotrack-ap
 ENV NODE_ENV=production
 WORKDIR /app
 
-# Usuario sin privilegios (principio de mínimo privilegio)
 RUN addgroup -g 1001 -S biotrack && adduser -u 1001 -S biotrack -G biotrack
 
-# Copiar artefactos desde el builder
-COPY --from=builder --chown=biotrack:biotrack /app/node_modules ./node_modules
-COPY --from=builder --chown=biotrack:biotrack /app/dist        ./dist
-COPY --from=builder --chown=biotrack:biotrack /app/prisma      ./prisma
-COPY --from=builder --chown=biotrack:biotrack /app/package.json ./package.json
+# Copiar artefactos ya podados del stage pruner
+COPY --from=pruner --chown=biotrack:biotrack /app/node_modules ./node_modules
+COPY --from=pruner --chown=biotrack:biotrack /app/dist        ./dist
+COPY --from=pruner --chown=biotrack:biotrack /app/prisma      ./prisma
+COPY --from=pruner --chown=biotrack:biotrack /app/package.json ./package.json
 
-# Directorio de uploads con permisos correctos
 RUN mkdir -p uploads && chown biotrack:biotrack uploads
 
 USER biotrack
