@@ -24,6 +24,7 @@ reports/
 !tsconfig.json
 !README.md
 !LICENSE
+!sonar-project.properties
 !Dockerfile
 !docker-compose.yml
 !docker-compose.prod.yml
