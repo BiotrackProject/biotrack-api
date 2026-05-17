@@ -22,6 +22,7 @@ reports/
 !package.json
 !pnpm-lock.yaml
 !tsconfig.json
+!tsconfig.jest.json
 !README.md
 !LICENSE
 !sonar-project.properties

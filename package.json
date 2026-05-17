@@ -58,6 +58,7 @@
     "@types/pg": "^8.11.0",
     "prisma": "^7.0.0",
     "supertest": "^7.0.0",
+    "ts-jest": "^29.3.0",
     "tsx": "^4.22.0",
     "typescript": "^6.0.3"
   },
@@ -72,7 +73,7 @@
   "jest": {
     "testEnvironment": "node",
     "transform": {
-      "^.+\\.tsx?$": ["tsx", { "tsconfig": "tsconfig.json" }]
+      "^.+\\.tsx?$": ["ts-jest", { "tsconfig": "tsconfig.jest.json", "isolatedModules": true }]
     },
     "setupFiles": ["<rootDir>/tests/setup.ts"],
     "moduleNameMapper": {
