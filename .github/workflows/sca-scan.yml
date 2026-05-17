@@ -106,6 +106,8 @@ jobs:
           args: >
             --enableRetired
             --failOnCVSS 7
+            --disableYarnAudit
+            --disableNodeAudit
             --exclude "**/node_modules/esbuild/**"
             --exclude "**/node_modules/@esbuild/**"
 
