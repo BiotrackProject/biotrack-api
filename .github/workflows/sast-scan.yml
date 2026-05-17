@@ -32,6 +32,10 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
 
+      # --ignore-scripts saltó el postinstall de Prisma; generamos el cliente explícitamente
+      - name: Generate Prisma client
+        run: pnpm exec prisma generate
+
       # Genera coverage/lcov.info que SonarCloud leerá via sonar-project.properties
       - name: Run tests with coverage
         run: pnpm test:coverage

@@ -82,6 +82,7 @@
     "testMatch": ["**/tests/**/*.test.ts"],
     "collectCoverageFrom": [
       "src/**/*.ts",
+      "!src/**/*.d.ts",
       "!src/server.ts",
       "!src/config/swagger.ts",
       "!src/config/env.ts",
