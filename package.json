@@ -71,7 +71,6 @@
   },
   "jest": {
     "testEnvironment": "node",
-    "extensionsToTreatAsEsm": [".ts"],
     "transform": {
       "^.+\\.tsx?$": ["tsx", { "tsconfig": "tsconfig.json" }]
     },
