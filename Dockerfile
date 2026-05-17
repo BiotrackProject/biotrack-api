@@ -34,10 +34,11 @@ WORKDIR /app
 RUN addgroup -g 1001 -S biotrack && adduser -u 1001 -S biotrack -G biotrack
 
 # Copiar artefactos ya podados del stage pruner
-COPY --from=pruner --chown=biotrack:biotrack /app/node_modules ./node_modules
-COPY --from=pruner --chown=biotrack:biotrack /app/dist        ./dist
-COPY --from=pruner --chown=biotrack:biotrack /app/prisma      ./prisma
-COPY --from=pruner --chown=biotrack:biotrack /app/package.json ./package.json
+# --chown=root:root + --chmod=755 → biotrack puede leer/ejecutar pero no escribir (ASVS V14)
+COPY --from=pruner --chown=root:root --chmod=755 /app/node_modules ./node_modules
+COPY --from=pruner --chown=root:root --chmod=755 /app/dist        ./dist
+COPY --from=pruner --chown=root:root --chmod=755 /app/prisma      ./prisma
+COPY --from=pruner --chown=root:root --chmod=644 /app/package.json ./package.json
 
 RUN mkdir -p uploads && chown biotrack:biotrack uploads
 
