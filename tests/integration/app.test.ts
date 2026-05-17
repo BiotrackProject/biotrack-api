@@ -46,8 +46,8 @@ describe('Protected routes — missing token returns 401', () => {
     expect(res.status).toBe(401);
   });
 
-  it('GET /api/v1/indicadores without token', async () => {
-    const res = await request(app).get('/api/v1/indicadores');
+  it('GET /api/v1/indicadores/impacto without token', async () => {
+    const res = await request(app).get('/api/v1/indicadores/impacto');
     expect(res.status).toBe(401);
   });
 
@@ -56,8 +56,8 @@ describe('Protected routes — missing token returns 401', () => {
     expect(res.status).toBe(401);
   });
 
-  it('GET /api/v1/admin without token', async () => {
-    const res = await request(app).get('/api/v1/admin');
+  it('GET /api/v1/admin/usuarios without token', async () => {
+    const res = await request(app).get('/api/v1/admin/usuarios');
     expect(res.status).toBe(401);
   });
 });
