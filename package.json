@@ -73,7 +73,7 @@
   "jest": {
     "testEnvironment": "node",
     "transform": {
-      "^.+\\.tsx?$": ["ts-jest", { "tsconfig": "tsconfig.jest.json", "isolatedModules": true }]
+      "^.+\\.tsx?$": ["ts-jest", { "tsconfig": "tsconfig.jest.json" }]
     },
     "setupFiles": ["<rootDir>/tests/setup.ts"],
     "moduleNameMapper": {
