@@ -16,7 +16,7 @@ services:
     environment:
       POSTGRES_DB: biotrack_db
       POSTGRES_USER: biotrack
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-biotrack_dev_secret}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - "5432:5432"
     volumes:
@@ -43,7 +43,7 @@ services:
       - .env
     environment:
       NODE_ENV: development
-      DATABASE_URL: postgresql://biotrack:${POSTGRES_PASSWORD:-biotrack_dev_secret}@postgres:5432/biotrack_db
+      DATABASE_URL: postgresql://biotrack:${POSTGRES_PASSWORD}@postgres:5432/biotrack_db
     ports:
       - "${PORT:-3000}:3000"
     volumes:
@@ -66,7 +66,7 @@ services:
     env_file:
       - .env
     environment:
-      DATABASE_URL: postgresql://biotrack:${POSTGRES_PASSWORD:-biotrack_dev_secret}@postgres:5432/biotrack_db
+      DATABASE_URL: postgresql://biotrack:${POSTGRES_PASSWORD}@postgres:5432/biotrack_db
     command: pnpm exec prisma migrate dev
     profiles:
       - tools
@@ -83,7 +83,7 @@ services:
     env_file:
       - .env
     environment:
-      DATABASE_URL: postgresql://biotrack:${POSTGRES_PASSWORD:-biotrack_dev_secret}@postgres:5432/biotrack_db
+      DATABASE_URL: postgresql://biotrack:${POSTGRES_PASSWORD}@postgres:5432/biotrack_db
     command: pnpm db:seed
     profiles:
       - tools
