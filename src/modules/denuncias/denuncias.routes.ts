@@ -1,7 +1,7 @@
 import { Router, type Request, type Response } from 'express';
 import { authenticate } from '../../middleware/authenticate.js';
 import { authorize } from '../../middleware/authorize.js';
-import { seguimientoLimiter } from '../../middleware/rateLimiter.js';
+import { denunciaPublicaLimiter, seguimientoLimiter } from '../../middleware/rateLimiter.js';
 
 const router: Router = Router();
 
@@ -14,8 +14,8 @@ const router: Router = Router();
 
 const todo = (_req: Request, res: Response): void => { res.status(501).json({ error: 'Módulo en desarrollo.' }); };
 
-// RF-2.1 — Público (anónimo o autenticado)
-router.post('/', todo);
+// RF-2.1 — Público (anónimo o autenticado), máximo 10 req/min por IP
+router.post('/', denunciaPublicaLimiter, todo);
 
 // RF-2.6 — Consulta pública por código de seguimiento (sin auth)
 router.get('/seguimiento/:codigo', seguimientoLimiter, todo);
