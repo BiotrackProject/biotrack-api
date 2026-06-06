@@ -21,15 +21,15 @@ router.post('/', denunciaPublicaLimiter, todo);
 router.get('/seguimiento/:codigo', seguimientoLimiter, todo);
 
 // RF-2.5 — Exportación (antes que /:id para evitar colisión de rutas)
-router.get('/exportar', ...authenticate, authorize('MOD_02_DENUNCIAS', 'EXPORTAR'), todo);
+router.get('/exportar', authenticate, authorize('MOD_02_DENUNCIAS', 'Exportar'), todo);
 
 // RF-2.2 + RF-2.4 — Listado con filtros y paginación
-router.get('/', ...authenticate, authorize('MOD_02_DENUNCIAS', 'LEER'), todo);
+router.get('/', authenticate, authorize('MOD_02_DENUNCIAS', 'Leer'), todo);
 
 // RF-2.2 — Detalle
-router.get('/:id', ...authenticate, authorize('MOD_02_DENUNCIAS', 'LEER'), todo);
+router.get('/:id', authenticate, authorize('MOD_02_DENUNCIAS', 'Leer'), todo);
 
 // RF-2.3 — Cambio de estado (máquina de estados)
-router.patch('/:id/estado', ...authenticate, authorize('MOD_02_DENUNCIAS', 'EDITAR'), todo);
+router.patch('/:id/estado', authenticate, authorize('MOD_02_DENUNCIAS', 'Editar'), todo);
 
 export default router;

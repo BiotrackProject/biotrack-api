@@ -12,53 +12,53 @@ import {
 } from '../../src/shared/constants/enums.js';
 
 describe('TRANSICIONES_DENUNCIA — máquina de estados RF-2.3', () => {
-  it('PENDIENTE solo puede transicionar a EN_INVESTIGACION', () => {
-    expect(TRANSICIONES_DENUNCIA.PENDIENTE).toEqual(['EN_INVESTIGACION']);
+  it('Pendiente solo puede transicionar a En_Investigacion', () => {
+    expect(TRANSICIONES_DENUNCIA.Pendiente).toEqual(['En_Investigacion']);
   });
 
-  it('EN_INVESTIGACION puede ir a VERIFICADA o DESESTIMADA', () => {
-    expect(TRANSICIONES_DENUNCIA.EN_INVESTIGACION).toContain('VERIFICADA');
-    expect(TRANSICIONES_DENUNCIA.EN_INVESTIGACION).toContain('DESESTIMADA');
-    expect(TRANSICIONES_DENUNCIA.EN_INVESTIGACION).toHaveLength(2);
+  it('En_Investigacion puede ir a Verificada o Desestimada', () => {
+    expect(TRANSICIONES_DENUNCIA.En_Investigacion).toContain('Verificada');
+    expect(TRANSICIONES_DENUNCIA.En_Investigacion).toContain('Desestimada');
+    expect(TRANSICIONES_DENUNCIA.En_Investigacion).toHaveLength(2);
   });
 
-  it('VERIFICADA puede ir a RESUELTA o DESESTIMADA', () => {
-    expect(TRANSICIONES_DENUNCIA.VERIFICADA).toContain('RESUELTA');
-    expect(TRANSICIONES_DENUNCIA.VERIFICADA).toContain('DESESTIMADA');
+  it('Verificada puede ir a Resuelta o Desestimada', () => {
+    expect(TRANSICIONES_DENUNCIA.Verificada).toContain('Resuelta');
+    expect(TRANSICIONES_DENUNCIA.Verificada).toContain('Desestimada');
   });
 
-  it('RESUELTA es un estado terminal sin transiciones', () => {
-    expect(TRANSICIONES_DENUNCIA.RESUELTA).toHaveLength(0);
+  it('Resuelta es un estado terminal sin transiciones', () => {
+    expect(TRANSICIONES_DENUNCIA.Resuelta).toHaveLength(0);
   });
 
-  it('DESESTIMADA es un estado terminal sin transiciones', () => {
-    expect(TRANSICIONES_DENUNCIA.DESESTIMADA).toHaveLength(0);
+  it('Desestimada es un estado terminal sin transiciones', () => {
+    expect(TRANSICIONES_DENUNCIA.Desestimada).toHaveLength(0);
   });
 
-  it('PENDIENTE no puede ir directamente a RESUELTA (salto inválido)', () => {
-    expect(TRANSICIONES_DENUNCIA.PENDIENTE).not.toContain('RESUELTA');
+  it('Pendiente no puede ir directamente a Resuelta (salto inválido)', () => {
+    expect(TRANSICIONES_DENUNCIA.Pendiente).not.toContain('Resuelta');
   });
 
-  it('PENDIENTE no puede ir directamente a DESESTIMADA', () => {
-    expect(TRANSICIONES_DENUNCIA.PENDIENTE).not.toContain('DESESTIMADA');
+  it('Pendiente no puede ir directamente a Desestimada', () => {
+    expect(TRANSICIONES_DENUNCIA.Pendiente).not.toContain('Desestimada');
   });
 });
 
 describe('ESTADOS_REQUIEREN_COMENTARIO', () => {
-  it('RESUELTA requiere comentario', () => {
-    expect(ESTADOS_REQUIEREN_COMENTARIO).toContain('RESUELTA');
+  it('Resuelta requiere comentario', () => {
+    expect(ESTADOS_REQUIEREN_COMENTARIO).toContain('Resuelta');
   });
 
-  it('DESESTIMADA requiere comentario', () => {
-    expect(ESTADOS_REQUIEREN_COMENTARIO).toContain('DESESTIMADA');
+  it('Desestimada requiere comentario', () => {
+    expect(ESTADOS_REQUIEREN_COMENTARIO).toContain('Desestimada');
   });
 
-  it('PENDIENTE no requiere comentario', () => {
-    expect(ESTADOS_REQUIEREN_COMENTARIO).not.toContain('PENDIENTE');
+  it('Pendiente no requiere comentario', () => {
+    expect(ESTADOS_REQUIEREN_COMENTARIO).not.toContain('Pendiente');
   });
 
-  it('EN_INVESTIGACION no requiere comentario', () => {
-    expect(ESTADOS_REQUIEREN_COMENTARIO).not.toContain('EN_INVESTIGACION');
+  it('En_Investigacion no requiere comentario', () => {
+    expect(ESTADOS_REQUIEREN_COMENTARIO).not.toContain('En_Investigacion');
   });
 });
 
@@ -72,26 +72,26 @@ describe('Constantes de enums', () => {
   });
 
   it('NIVEL_RIESGO tiene los 4 niveles esperados', () => {
-    expect(NIVEL_RIESGO.BAJO).toBe('BAJO');
-    expect(NIVEL_RIESGO.MEDIO).toBe('MEDIO');
-    expect(NIVEL_RIESGO.ALTO).toBe('ALTO');
-    expect(NIVEL_RIESGO.CRITICO).toBe('CRITICO');
+    expect(NIVEL_RIESGO.Bajo).toBe('Bajo');
+    expect(NIVEL_RIESGO.Medio).toBe('Medio');
+    expect(NIVEL_RIESGO.Alto).toBe('Alto');
+    expect(NIVEL_RIESGO.Critico).toBe('Critico');
   });
 
-  it('TIPO_SENSOR incluye GPS_TRACKER y AUDIO', () => {
-    expect(TIPO_SENSOR.GPS_TRACKER).toBe('GPS_TRACKER');
-    expect(TIPO_SENSOR.AUDIO).toBe('AUDIO');
+  it('TIPO_SENSOR incluye GPS_Tracker y Audio', () => {
+    expect(TIPO_SENSOR.GPS_Tracker).toBe('GPS_Tracker');
+    expect(TIPO_SENSOR.Audio).toBe('Audio');
   });
 
   it('TIPO_ACTIVIDAD incluye extracción en zona protegida', () => {
-    expect(TIPO_ACTIVIDAD.EXTRACCION_ZONA_PROTEGIDA).toBe('EXTRACCION_ZONA_PROTEGIDA');
+    expect(TIPO_ACTIVIDAD.Extraccion_Zona_Protegida).toBe('Extraccion_Zona_Protegida');
   });
 
   it('ESTADO_DENUNCIA tiene los 5 estados del flujo', () => {
     expect(Object.keys(ESTADO_DENUNCIA)).toHaveLength(5);
   });
 
-  it('ESTADO_USUARIO tiene los 3 estados de usuario', () => {
-    expect(Object.keys(ESTADO_USUARIO)).toHaveLength(3);
+  it('ESTADO_USUARIO tiene los 2 estados de usuario', () => {
+    expect(Object.keys(ESTADO_USUARIO)).toHaveLength(2);
   });
 });
