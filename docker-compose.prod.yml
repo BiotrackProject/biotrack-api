@@ -1,92 +1,38 @@
-# ─── docker-compose.prod.yml — Entorno de PRODUCCIÓN ─────────────────────────
-# Uso: docker compose -f docker-compose.prod.yml up -d
+# ─── docker-compose.prod.yml — Entorno de PRODUCCIÓN (VPS / servidor propio) ──
+# Uso: docker compose -f docker-compose.prod.yml up -d --build
 #
-# Requisitos:
-#   - Archivo .env con todas las variables (ver .env.example)
-#   - POSTGRES_PASSWORD debe estar definido en .env (no usar el default)
+# Este archivo NO levanta postgres — usa la base de datos externa (Railway, RDS, etc.)
+# DATABASE_URL en .env.production debe apuntar al servidor de BD externo.
 #
 # Primera vez:
-#   docker compose -f docker-compose.prod.yml run --rm migrate
-#   docker compose -f docker-compose.prod.yml run --rm seed
-#   docker compose -f docker-compose.prod.yml up -d
+#   1. Crear .env.production a partir de .env.example con los valores reales
+#   2. docker compose -f docker-compose.prod.yml up -d --build
 
 name: biotrack-prod
 
 services:
-  # ─── Base de datos ──────────────────────────────────────────────────────────
-  postgres:
-    image: postgres:15-alpine
-    container_name: biotrack_postgres_prod
-    restart: always
-    environment:
-      POSTGRES_DB: biotrack_db
-      POSTGRES_USER: biotrack
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}     # Obligatorio en .env, sin default
-    expose:
-      - "5432"                                    # Solo accesible dentro de la red interna
-    volumes:
-      - postgres_prod_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U biotrack -d biotrack_db"]
-      interval: 15s
-      timeout: 5s
-      retries: 5
-      start_period: 20s
-
-  # ─── API (imagen compilada, stage runner) ───────────────────────────────────
+  # ─── API (imagen compilada, stage runner — sin devDeps, sin tsx) ────────────
   api:
     build:
       context: .
       dockerfile: Dockerfile
-      target: runner            # Imagen optimizada de producción (sin devDeps, sin tsx)
+      target: runner
     container_name: biotrack_api_prod
     restart: always
-    depends_on:
-      postgres:
-        condition: service_healthy
     env_file:
-      - .env
-    environment:
-      NODE_ENV: production
-      DATABASE_URL: postgresql://biotrack:${POSTGRES_PASSWORD}@postgres:5432/biotrack_db
+      - .env.production          # Variables de producción (nunca commitear este archivo)
     ports:
       - "${PORT:-3000}:3000"
     volumes:
       - uploads_prod:/app/uploads
-
-  # ─── Migraciones (ejecutar una vez antes del primer deploy) ─────────────────
-  migrate:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: builder
-    container_name: biotrack_migrate_prod
-    depends_on:
-      postgres:
-        condition: service_healthy
-    environment:
-      DATABASE_URL: postgresql://biotrack:${POSTGRES_PASSWORD}@postgres:5432/biotrack_db
-    command: pnpm exec prisma migrate deploy   # deploy (no dev) para producción
-    profiles:
-      - tools
-
-  seed:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: builder
-    container_name: biotrack_seed_prod
-    depends_on:
-      postgres:
-        condition: service_healthy
-    environment:
-      DATABASE_URL: postgresql://biotrack:${POSTGRES_PASSWORD}@postgres:5432/biotrack_db
-    command: pnpm db:seed
-    profiles:
-      - tools
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      start_period: 40s
+      retries: 3
 
 volumes:
-  postgres_prod_data:
   uploads_prod:
 
 networks:

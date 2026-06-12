@@ -24,8 +24,10 @@
   "dependencies": {
     "@prisma/adapter-pg": "^7.0.0",
     "@prisma/client": "^7.0.0",
-    "pg": "^8.13.0",
+    "@types/bcryptjs": "^3.0.0",
+    "@types/jsonwebtoken": "^9.0.10",
     "auth0": "^5.10.0",
+    "bcryptjs": "^3.0.3",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
@@ -34,8 +36,10 @@
     "express-oauth2-jwt-bearer": "^1.8.0",
     "express-rate-limit": "^7.4.1",
     "helmet": "^8.0.0",
+    "jsonwebtoken": "^9.0.3",
     "multer": "^2.1.1",
     "nodemailer": "^8.0.7",
+    "pg": "^8.13.0",
     "pino": "^9.5.0",
     "pino-http": "^10.3.0",
     "swagger-jsdoc": "^6.2.8",
@@ -50,12 +54,12 @@
     "@types/express": "^5.0.6",
     "@types/node": "^25.8.0",
     "@types/nodemailer": "^8.0.0",
+    "@types/pg": "^8.11.0",
     "@types/swagger-jsdoc": "^6.0.4",
     "@types/swagger-ui-express": "^4.1.8",
     "eslint": "^9.17.0",
     "jest": "^29.7.0",
     "pino-pretty": "^13.0.0",
-    "@types/pg": "^8.11.0",
     "prisma": "^7.0.0",
     "supertest": "^7.0.0",
     "ts-jest": "^29.3.0",
@@ -73,13 +77,22 @@
   "jest": {
     "testEnvironment": "node",
     "transform": {
-      "^.+\\.tsx?$": ["ts-jest", { "tsconfig": "tsconfig.jest.json" }]
+      "^.+\\.tsx?$": [
+        "ts-jest",
+        {
+          "tsconfig": "tsconfig.jest.json"
+        }
+      ]
     },
-    "setupFiles": ["<rootDir>/tests/setup.ts"],
+    "setupFiles": [
+      "<rootDir>/tests/setup.ts"
+    ],
     "moduleNameMapper": {
       "^(\\.{1,2}/.*)\\.js$": "$1"
     },
-    "testMatch": ["**/tests/**/*.test.ts"],
+    "testMatch": [
+      "**/tests/**/*.test.ts"
+    ],
     "collectCoverageFrom": [
       "src/**/*.ts",
       "!src/**/*.d.ts",
@@ -95,9 +108,15 @@
       "!src/modules/auth/auth.service.ts",
       "!src/modules/auth/auth.controller.ts"
     ],
-    "coverageReporters": ["lcov", "text", "json-summary"],
+    "coverageReporters": [
+      "lcov",
+      "text",
+      "json-summary"
+    ],
     "coverageThreshold": {
-      "global": { "lines": 50 }
+      "global": {
+        "lines": 50
+      }
     }
   }
 }
